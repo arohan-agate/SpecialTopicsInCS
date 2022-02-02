@@ -1,0 +1,57 @@
+mystery1:
+
+mystery1(1);	
+1
+mystery1(4);	
+1, 2, 4
+mystery1(16);	
+1, 2, 4, 8, 16
+mystery1(30);	
+1, 3, 7, 15, 30
+mystery1(100);	
+1, 3, 6, 12, 25, 50, 100
+
+
+
+mystery2:
+
+mystery2(113);	
+113
+mystery2(70);	
+140, 70
+mystery2(42);	
+168, 84, 42
+mystery2(30);	
+120, 60, 30
+mystery2(10);	
+160, 80, 40, 20, 10
+
+
+
+mystery3:
+
+mystery3(0);	
+*
+mystery3(1);	
+[*]
+mystery3(2);	
+([*])
+mystery3(4);	
+([([*])])
+mystery3(5);	
+[([([*])])]
+
+
+
+mysteryXY:
+
+mysteryXY(4, 1);	
+4
+mysteryXY(4, 2);	
+8, 4, 8
+mysteryXY(8, 2);	
+16, 8, 16
+mysteryXY(4, 3);	
+12, 8, 4, 8, 12
+mysteryXY(3, 4);	
+12, 9, 6, 3, 6, 9, 12
