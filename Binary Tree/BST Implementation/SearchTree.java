@@ -1,3 +1,6 @@
+import java.util.LinkedList;
+import java.util.Queue;
+
 // Class SearchTree stores and prints a binary search tree of
 // objects of type E.  E must implement the Comparable<E>
 // interface.
@@ -5,120 +8,157 @@
 public class SearchTree<E extends Comparable<E>> {
     private SearchTreeNode<E> overallRoot; // root of overall tree
 
-    //Constructor
+    // post: constructs an empty search tree
     public SearchTree() {
-        overallRoot = null;
+        overallRoot = new SearchTreeNode<E>(null, null, null);
     }
 
-    //Method for adding values to the binary search tree
-    //Runtime is O(2^height of tree)
-    //Space complexity is O(height of tree)
+    // post: value added to tree so as to preserve binary search tree
+    // Time: O(2^height) or n
+    // Space: O(height)
     public void add(E value) {
+        if (overallRoot.data == null) {
+            overallRoot = new SearchTreeNode<E>(value, null, null);
+            return;
+        }
         overallRoot = add(overallRoot, value);
     }
 
-    //Private helper method for adding values to the binary search tree
-    //Runtime is O(2^height of tree)
-    //Space complexity is O(height of tree)
+    // post: value added to tree so as to preserve binary search tree
+    // Space: O(height)
+    // Time: O(height) or O(n)
     private SearchTreeNode<E> add(SearchTreeNode<E> root, E value) {
-      if(root == null) {
-          root = new SearchTreeNode<>(value);
-          return root;
-      } else if(root.data.compareTo(value) > 0){
-          root.left = add(root.left, value);
-      } else if(root.data.compareTo(value) < 0) {
-          root.right = add(root.right, value);
-      }
-      return root;
+        if (root == null) {
+            root = new SearchTreeNode<E>(value, null, null);
+        } else if (value.compareTo(root.data) > 0) {
+            root.right = add(root.right, value);
+        } else {
+            root.left = add(root.left, value);
+        }
+        // BST has no duplicates
+        return root;
     }
 
-    //Method to see if a SearchTree contains a certain value
-    //Runtime is O(2^height of tree)
-    //Space complexity is O(height of tree)
+    // post: returns true if tree contains value, returns false otherwise
     public boolean contains(E value) {
+        // TO DO:
         return contains(overallRoot, value);
-    }   
-
-    //Private helper method for checking whether a tree contains a value
-    //Runtime is O(2^height of tree)
-    //Space complexity is O(height of tree)
-    private boolean contains(SearchTreeNode<E> root, E value) {
-        if(root == null) return false;
-        if(root.data.equals(value)) return true;
-        return contains(root.left, value) || contains(root.right, value);
     }
-    
-    //Method for removing a value from the SearchTree
-    //Runtime is O(2^height of tree)
-    //Space complexity is O(height of tree)
+
+    // post: returns true if given tree contains value, returns false otherwise
+
+    // Time: O(height)
+    // Space: O(height)
+    private boolean contains(SearchTreeNode<E> root, E value) {
+        if (root.data == null) {
+            return false;
+        }
+
+        else if (root.data.equals(value)) {
+            return true;
+        } else if (value.compareTo(root.data) > 0) {
+            return contains(root.right, value);
+        }
+        // less than
+        else {
+            return contains(root.left, value);
+        }
+
+    }
+
+    // post: value removed from tree so as to preserve binary search tree
+    // time: O(height)
+    // space: O(height)
     public void remove(E value) {
         overallRoot = remove(overallRoot, value);
     }
-    
-    //Private helper method for removing a value in a tree
-    //Runtime is O(2^height of tree)
-    //Space complexity is O(height of tree)
+
+    // post: value removed to tree so as to preserve binary search tree
+    // time: O(height)
+    // space: O(height)
     private SearchTreeNode<E> remove(SearchTreeNode<E> root, E value) {
-        if(root == null) return null;
-        else if(root.data.compareTo(value) > 0) root.left = remove(root.left, value);
-        else if(root.data.compareTo(value) < 0) root.right = remove(root.right, value);
-        else {
-            if(root.right == null) return root.left;
-            else if(root.left == null) return root.right;
-            else {
-                root.data = findSmallest(root.right);
-                root.right = remove(root.right, root.data);
+        if (!contains(root, value)){
+            return root;
+        }
+        
+        if (value.compareTo(root.data) == 0) {
+            
+            // if only a leaf:
+            if (root.left == null && root.left == null) {
+                root = null;
             }
+
+            // if only a right branch
+            else if (root.left == null) {
+                root = root.right;
+            }
+
+            // if only a left branch
+            else if (root.right == null) {
+                root = root.left;
+            }
+
+            // if both a left and right branch
+            else {
+                root.data = findSmallest(root.right); 
+            }
+            return root;
         }
-        return root;
+
+        else if (value.compareTo(root.data) > 0) {
+            return remove(root.right, value);
+        }
+
+        else {
+            return remove(root.left, value);
+        }
+
     }
-    
-    //Finds the smallest value in a SearchTreeNode
-    //Runtime is O(height of tree)
-    //Space complexity is O(height of tree)
+
+    // post: return the smallest value in the binary search tree
+    // Time: O(height)
+    // Space: O(height)
     private E findSmallest(SearchTreeNode<E> root) {
-        //Because this is a binary search tree, the left subtree's values are always smaller than the right subtree's
-        //Base case
-        if (root == null || root.data == null){
-            return null;
-        }
-        //If there is no left subtree, the minimum value has been found
-        if (root.left == null || root.left.data == null){
+        if (root.left == null) {
             return root.data;
         }
-        //If there is a left subtree, call the method again
         return findSmallest(root.left);
     }
 
-    //In order traversal of the binary search tree
-    //Runtime is O(2^height of tree)
-    //Space complexity is O(height of tree)
+    // Time: O(height)
+    // Space: O(height)
+    private SearchTreeNode<E> removeSmallest(SearchTreeNode<E> root) {
+        if (root.left == null) {
+            root = null;
+            return root;
+        } else {
+            return removeSmallest(root.left);
+        }
+    }
+
+    // post: prints the data of the tree, one per line
+    // time: O(branches)
+    // space: O(branches)
     public void print() {
-        printInorder(overallRoot);
+       printInorder(this.overallRoot);
     }
 
-    //Private helper method for printing the inorder traversal of the tree
-    //Runtime is O(2^height of tree)
-    //Space complexity is O(height of tree)
+    // post: prints the data of the tree using an inorder traversal
+    // time: O(branches)
+    // space O(branches)
     private void printInorder(SearchTreeNode<E> root) {
-        if(root == null) return;
+        if (root == null) {return;}
         printInorder(root.left);
-        System.out.println(root.data.toString());
+        System.out.println(root.data);
         printInorder(root.right);
+        return;
+
     }
 
-    //A compareTo method to compare two SearchTreeNodes, this method ended up being useless
-    //Runtime is O(1)
-    //Space complexity is O(1)
-    private int compareTo(SearchTreeNode<E> value){
-        int result = this.overallRoot.data.compareTo(value.data);
-        return result;
-    }
-    //Private inner class
     private static class SearchTreeNode<E> {
-        public E data;                   // data stored in this node
-        public SearchTreeNode<E> left;   // left subtree
-        public SearchTreeNode<E> right;  //  right subtree
+        public E data; // data stored in this node
+        public SearchTreeNode<E> left; // left subtree
+        public SearchTreeNode<E> right; // right subtree
 
         // post: constructs a leaf node with given data
         public SearchTreeNode(E data) {
@@ -126,8 +166,7 @@ public class SearchTree<E extends Comparable<E>> {
         }
 
         // post: constructs a node with the given data and links
-        public SearchTreeNode(E data, SearchTreeNode<E> left,
-                              SearchTreeNode<E> right) {
+        public SearchTreeNode(E data, SearchTreeNode<E> left, SearchTreeNode<E> right) {
             this.data = data;
             this.left = left;
             this.right = right;
