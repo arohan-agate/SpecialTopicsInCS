@@ -1,2 +1,2 @@
 # SpecialTopicsInCS
-Coding assignments from my 'Special Topics in Computer Science' class (DS &amp; Algorithms)
+Coding assignments from my 'Special Topics in Computer Science' class (CSE 143).
